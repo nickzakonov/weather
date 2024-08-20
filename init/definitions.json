@@ -1,0 +1,71 @@
+{
+  "users": [
+    {
+      "name": "guest",
+      "password_hash": "BMfxN8drrYcIqXZMr+pWTpDT0nMcOagMduLX0bjr4jwud/pN",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": [
+        "administrator"
+      ],
+      "limits": {}
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "guest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "queues": [
+    {
+      "name": "weather_queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "consumer-timeout": 70000,
+      "arguments": {
+        "x-queue-type": "classic",
+        "x-consumer-timeout": 70000
+      }
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "weather_exchange",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "weather_exchange",
+      "vhost": "/",
+      "destination": "weather_queue",
+      "destination_type": "queue",
+      "routing_key": "REQUEST_LIMIT_EXCEEDED",
+      "arguments": {}
+    }
+  ],
+  "policies":[
+    {
+      "vhost":"/",
+      "name":"weather_queue",
+      "pattern":"",
+      "apply-to":"queues",
+      "definition":{"consumer-timeout":80000},
+      "priority":0
+    }
+  ]
+}
